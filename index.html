@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple eCommerce Website</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #cart {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+
+    .product-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .product {
+      background-color: white;
+      border-radius: 5px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      text-align: center;
+    }
+
+    .product img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cart-modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .cart-modal-content ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .cart-modal-content li {
+      margin-bottom: 10px;
+    }
+
+    .total {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Welcome to ShopOnline</h1>
+    <div id="cart">
+      <button onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</button>
+    </div>
+  </header>
+
+  <div id="products" class="product-container">
+    <!-- Products will be dynamically added here -->
+  </div>
+
+  <div id="cart-modal" class="cart-modal">
+    <div class="cart-modal-content">
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <div class="total">
+        <span>Total: $<span id="total-price">0.00</span></span>
+      </div>
+      <button onclick="clearCart()">Clear Cart</button>
+      <button onclick="toggleCart()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: 1, name: 'Laptop', price: 899.99, image: 'https://via.placeholder.com/200x150?text=Laptop' },
+      { id: 2, name: 'Smartphone', price: 499.99, image: 'https://via.placeholder.com/200x150?text=Smartphone' },
+      { id: 3, name: 'Headphones', price: 149.99, image: 'https://via.placeholder.com/200x150?text=Headphones' },
+    ];
+
+    let cart = [];
+
+    // Render Products
+    const renderProducts = () => {
+      const productsContainer = document.getElementById('products');
+      productsContainer.innerHTML = '';
+
+      products.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('product');
+
+        productDiv.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>$${product.price}</p>
+          <button onclick="addToCart(${product.id})">Add to Cart</button>
+        `;
+
+        productsContainer.appendChild(productDiv);
+      });
+    };
+
+    // Add Product to Cart
+    const addToCart = (id) => {
+      const product = products.find(p => p.id === id);
+      cart.push(product);
+      updateCart();
+    };
+
+    // Update Cart UI
+    const updateCart = () => {
+      const cartCount = document.getElementById('cart-count');
+      cartCount.textContent = cart.length;
+
+      const cartItems = document.getElementById('cart-items');
+      cartItems.innerHTML = '';
+      let totalPrice = 0;
+
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price}`;
+        cartItems.appendChild(li);
+        totalPrice += item.price;
+      });
+
+      const totalPriceElement = document.getElementById('total-price');
+      totalPriceElement.textContent = totalPrice.toFixed(2);
+    };
+
+    // Toggle Cart Modal
+    const toggleCart = () => {
+      const cartModal = document.getElementById('cart-modal');
+      cartModal.style.display = cartModal.style.display === 'none' || cartModal.style.display === '' ? 'flex' : 'none';
+    };
+
+    // Clear Cart
+    const clearCart = () => {
+      cart = [];
+      updateCart();
+      toggleCart();
+    };
+
+    // Initialize the site
+    document.addEventListener('DOMContentLoaded', renderProducts);
+  </script>
+</body>
+</html>
